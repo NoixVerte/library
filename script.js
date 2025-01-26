@@ -15,6 +15,10 @@ function Book(name, author, pageAmount, hasBeenRead) {
     this.author  = author;
     this.pageAmount = pageAmount;
     this.hasBeenRead = hasBeenRead;
+
+    function toggleReadStatus() {
+        hasBeenRead = !hasBeenRead;
+    }
 }
 
 function addBookToLibrary(name, author, pageAmount, hasBeenRead) {
@@ -42,10 +46,20 @@ function updateShelves() {
         author.innerText = book.author;
         pages.innerText = book.pageAmount + " pages";
         readStatus.innerText = book.hasBeenRead ? "Has been read" : "Has not been read";
-        div.append(name, author, pages, readStatus);
+        const bookDeletionBtn = document.createElement("button");
+        bookDeletionBtn.innerText = "Delete";
+        bookDeletionBtn.classList.add("bookDeletionBtn");
+        div.append(name, author, pages, readStatus, bookDeletionBtn);
         fragment.append(div);
     });
     libraryDiv.append(fragment);
+    let bookDeletionBtns = document.getElementsByClassName("bookDeletionBtn");
+    for (let i = 0; i < bookDeletionBtns.length; i++) {
+        bookDeletionBtns[i].addEventListener("click", () => {
+            library.splice(i, 1);
+            updateShelves();
+        });
+    }
 }
 
 addBookBtn.addEventListener("click", ()  => {
@@ -71,15 +85,16 @@ submitBookBtn.addEventListener("click", (event) => {
             } else readStatusInput = false;
         };
     });
-    addBookToLibrary(titleInput.value, authorInput.value, pagesInput.value, readStatusInput);
-    console.log(library);
-    dialog.style.display = "none";
-    dialog.close();
-    updateShelves();
+    if (titleInput.value != "" && authorInput.value  != "" && pagesInput.value != "") {
+        addBookToLibrary(titleInput.value, authorInput.value, pagesInput.value, readStatusInput);
+        dialog.style.display = "none";
+        dialog.close();
+        updateShelves();
+    }
 });
 
 
-for (let i = 1; i <= 5; i++) {
+for (let i = 1; i <= 3; i++) {
     addBookToLibrary(`Book ${i}`, `Author ${i}`, `${Math.floor(Math.random() * 250 + 101)}`, Math.random() > 0.5);
 }
 

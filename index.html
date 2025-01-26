@@ -10,21 +10,21 @@
 <body>
     <dialog>
         <button id="closeModalBtn">x</button>
-        <form action="/" method="post">
+        <form action="#" method="get">
             <div class="inputContainer">
-                <label for="title">Book Title</label>
-                <input type="text" name="title" id="title" minlength="1">
+                <label for="title">Book Title*</label>
+                <input type="text" name="title" id="title" minlength="1" required>
             </div>
             <div class="inputContainer">
-                <label for="author">Author</label>
-                <input type="text" name="author" id="author" minlength="1">
+                <label for="author">Author*</label>
+                <input type="text" name="author" id="author" minlength="1" required>
             </div>
             <div class="inputContainer">
-                <label for="pages">Amount of pages</label>
-                <input type="number" name="pages" id="pages" min="1">
+                <label for="pages">Amount of pages*</label>
+                <input type="number" name="pages" id="pages" min="1" required>
             </div>
             <div class="inputContainer">
-                <legend>Have you read the book?</legend>
+                <legend>Have you read the book?*</legend>
                 <div>
                     <input type="radio" name="readStatus" id="yes" value="true" checked>
                     <span>Yes</span>
