@@ -109,4 +109,11 @@ button:active,
         left: 0.5rem;
         bottom: 0.5rem;
     }
+
+    & input {
+        position: absolute;
+        right: 1.25rem;
+        bottom: 1.25rem;
+        transform: scale(2);
+    }
 }

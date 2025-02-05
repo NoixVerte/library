@@ -16,8 +16,8 @@ function Book(name, author, pageAmount, hasBeenRead) {
     this.pageAmount = pageAmount;
     this.hasBeenRead = hasBeenRead;
 
-    function toggleReadStatus() {
-        hasBeenRead = !hasBeenRead;
+    this.toggleReadStatus = function toggleReadStatus() {
+        this.hasBeenRead = !this.hasBeenRead;
     }
 }
 
@@ -49,7 +49,13 @@ function updateShelves() {
         const bookDeletionBtn = document.createElement("button");
         bookDeletionBtn.innerText = "Delete";
         bookDeletionBtn.classList.add("bookDeletionBtn");
-        div.append(name, author, pages, readStatus, bookDeletionBtn);
+        const readStatusToggleInput = document.createElement("input");
+        readStatusToggleInput.classList.add("readStatusToggleInput");
+        readStatusToggleInput.type = "checkbox";
+        if (book.hasBeenRead) {
+            readStatusToggleInput.checked = true;
+        }
+        div.append(name, author, pages, readStatus, bookDeletionBtn, readStatusToggleInput);
         fragment.append(div);
     });
     libraryDiv.append(fragment);
@@ -59,6 +65,18 @@ function updateShelves() {
             library.splice(i, 1);
             updateShelves();
         });
+    }
+    let readStatusToggleInputs = document.getElementsByClassName("readStatusToggleInput");
+    for (let i = 0; i < readStatusToggleInputs.length; i ++) {
+        readStatusToggleInputs[i].addEventListener("click", () => {
+            library[i].toggleReadStatus();
+            if (library[i].hasBeenRead) {
+                readStatusToggleInputs[i].checked = true;
+            } else {
+                readStatusToggleInputs[i].checked = false;
+            }
+            updateShelves();
+        })
     }
 }
 
