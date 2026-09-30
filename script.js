@@ -1,4 +1,4 @@
-const library = [];
+// const library = [];
 const libraryDiv = document.querySelector(".library");
 const addBookBtn = document.querySelector("#addBookBtn");
 const dialog = document.querySelector("dialog");
@@ -10,75 +10,91 @@ const pagesInput = document.querySelector("#pages");
 const readStatusInputs = document.getElementsByName("readStatus");
 let readStatusInput;
 
-function Book(name, author, pageAmount, hasBeenRead) {
-    this.name = name;
-    this.author  = author;
-    this.pageAmount = pageAmount;
-    this.hasBeenRead = hasBeenRead;
+class Book {
+    constructor(name, author, pageAmount, hasBeenRead) {
+        this.name = name;
+        this.author  = author;
+        this.pageAmount = pageAmount;
+        this.hasBeenRead = hasBeenRead;
+    }
 
-    this.toggleReadStatus = function toggleReadStatus() {
-        this.hasBeenRead = !this.hasBeenRead;
+    toggleReadStatus() {
+        this.hasBeenRead  = !this.hasBeenRead;
     }
 }
 
-function addBookToLibrary(name, author, pageAmount, hasBeenRead) {
-    const newBook = new Book(name, author, pageAmount, hasBeenRead);
-    library.push(newBook);
-}
-
-function wipeShelves() {
-    while (libraryDiv.hasChildNodes()) {
-        libraryDiv.firstChild.remove();
+class Library {
+    constructor() {
+        this.library = [];
     }
-}
 
-function updateShelves() {
-    wipeShelves();
-    const fragment = document.createDocumentFragment();
-    library.forEach(book => {
-        const div = document.createElement("div");
-        div.classList.add("book");
-        const name = document.createElement("h1");
-        const author = document.createElement("h2");
-        const pages = document.createElement("h3");
-        const readStatus = document.createElement("h4");
-        name.innerText = book.name;
-        author.innerText = book.author;
-        pages.innerText = book.pageAmount + " pages";
-        readStatus.innerText = book.hasBeenRead ? "Has been read" : "Has not been read";
-        const bookDeletionBtn = document.createElement("button");
-        bookDeletionBtn.innerText = "Delete";
-        bookDeletionBtn.classList.add("bookDeletionBtn");
-        const readStatusToggleInput = document.createElement("input");
-        readStatusToggleInput.classList.add("readStatusToggleInput");
-        readStatusToggleInput.type = "checkbox";
-        if (book.hasBeenRead) {
-            readStatusToggleInput.checked = true;
+    addBookToLibrary(name, author, pageAmount, hasBeenRead) {
+        const newBook = new Book(name, author, pageAmount, hasBeenRead);
+        this.library.push(newBook);
+    }
+
+    addRandomBooksToLibrary() {
+        for (let i = 1; i <= 3; i++) {
+            this.addBookToLibrary(`Book ${i}`, `Author ${i}`, `${Math.floor(Math.random() * 250 + 101)}`, Math.random() > 0.5);
         }
-        div.append(name, author, pages, readStatus, bookDeletionBtn, readStatusToggleInput);
-        fragment.append(div);
-    });
-    libraryDiv.append(fragment);
-    let bookDeletionBtns = document.getElementsByClassName("bookDeletionBtn");
-    for (let i = 0; i < bookDeletionBtns.length; i++) {
-        bookDeletionBtns[i].addEventListener("click", () => {
-            library.splice(i, 1);
-            updateShelves();
-        });
     }
-    let readStatusToggleInputs = document.getElementsByClassName("readStatusToggleInput");
-    for (let i = 0; i < readStatusToggleInputs.length; i ++) {
-        readStatusToggleInputs[i].addEventListener("click", () => {
-            library[i].toggleReadStatus();
-            if (library[i].hasBeenRead) {
-                readStatusToggleInputs[i].checked = true;
-            } else {
-                readStatusToggleInputs[i].checked = false;
+
+    wipeShelves() {
+        while (libraryDiv.hasChildNodes()) {
+            libraryDiv.firstChild.remove();
+        }
+    }
+
+    updateShelves() {
+        this.wipeShelves();
+        const fragment = document.createDocumentFragment();
+        this.library.forEach(book => {
+            const div = document.createElement("div");
+            div.classList.add("book");
+            const name = document.createElement("h1");
+            const author = document.createElement("h2");
+            const pages = document.createElement("h3");
+            const readStatus = document.createElement("h4");
+            name.innerText = book.name;
+            author.innerText = book.author;
+            pages.innerText = book.pageAmount + " pages";
+            readStatus.innerText = book.hasBeenRead ? "Has been read" : "Has not been read";
+            const bookDeletionBtn = document.createElement("button");
+            bookDeletionBtn.innerText = "Delete";
+            bookDeletionBtn.classList.add("bookDeletionBtn");
+            const readStatusToggleInput = document.createElement("input");
+            readStatusToggleInput.classList.add("readStatusToggleInput");
+            readStatusToggleInput.type = "checkbox";
+            if (book.hasBeenRead) {
+                readStatusToggleInput.checked = true;
             }
-            updateShelves();
-        })
+            div.append(name, author, pages, readStatus, bookDeletionBtn, readStatusToggleInput);
+            fragment.append(div);
+        });
+        libraryDiv.append(fragment);
+        let bookDeletionBtns = document.getElementsByClassName("bookDeletionBtn");
+        for (let i = 0; i < bookDeletionBtns.length; i++) {
+            bookDeletionBtns[i].addEventListener("click", () => {
+                this.library.splice(i, 1);
+                this.updateShelves();
+            });
+        }
+        let readStatusToggleInputs = document.getElementsByClassName("readStatusToggleInput");
+        for (let i = 0; i < readStatusToggleInputs.length; i ++) {
+            readStatusToggleInputs[i].addEventListener("click", () => {
+                this.library[i].toggleReadStatus();
+                if (this.library[i].hasBeenRead) {
+                    readStatusToggleInputs[i].checked = true;
+                } else {
+                    readStatusToggleInputs[i].checked = false;
+                }
+                this.updateShelves();
+            })
+        }
     }
 }
+
+let MyLibrary = new Library();
 
 addBookBtn.addEventListener("click", ()  => {
     titleInput.value  = "";
@@ -104,16 +120,12 @@ submitBookBtn.addEventListener("click", (event) => {
         };
     });
     if (titleInput.value != "" && authorInput.value  != "" && pagesInput.value != "") {
-        addBookToLibrary(titleInput.value, authorInput.value, pagesInput.value, readStatusInput);
+        MyLibrary.addBookToLibrary(titleInput.value, authorInput.value, pagesInput.value, readStatusInput);
         dialog.style.display = "none";
         dialog.close();
-        updateShelves();
+        MyLibrary.updateShelves();
     }
 });
 
-
-for (let i = 1; i <= 3; i++) {
-    addBookToLibrary(`Book ${i}`, `Author ${i}`, `${Math.floor(Math.random() * 250 + 101)}`, Math.random() > 0.5);
-}
-
-updateShelves();
+MyLibrary.addRandomBooksToLibrary();
+MyLibrary.updateShelves();
